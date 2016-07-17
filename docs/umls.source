@@ -1,0 +1,47 @@
+http://www.planttext.com/
+
+Design structure
+----------------
+@startuml
+
+title Omnivore Structure
+
+class Application
+class Endpoint
+class Source
+class Action
+
+Application "1" *-down-"*" Endpoint: endpoints
+Endpoint "1" *-down-"*" Source: sources
+Endpoint "1" *-down-"*" Action: actions
+
+@enduml
+
+Message flow
+---------------
+@startuml
+
+title Omnivore Processing
+
+
+start
+
+:SourceA;
+
+while (TestEndpoint)
+
+  fork
+    :Action1;
+  fork again
+    :Action2;
+  fork end
+
+endwhile
+
+:Application;
+
+:SourceB;
+
+stop
+
+@enduml

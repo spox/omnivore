@@ -1,0 +1,44 @@
+{
+  "endpoints": {
+    "star": {
+      "sources": [
+        {
+          "type": "internal"
+          "name": "internal_star"
+        }
+      ],
+      "config": {
+        "force_processing": true
+      }
+    },
+    "tester": {
+      "sources": [
+        {
+          "type": "internal"
+          "name": "internal_tester"
+        }
+      ],
+      "actions": [
+        "test_chain",
+        "test"
+      ],
+      "config": {
+        "test": {
+          "target": "tester",
+          "key1": "value1"
+        }
+      }
+    },
+    "spec": {
+      "sources": [
+        {
+          "type": "spec",
+          "name": "final"
+        }
+      ],
+      "config": {
+        "force_processing": true
+      }
+    }
+  }
+}

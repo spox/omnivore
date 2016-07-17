@@ -1,0 +1,43 @@
+{
+  "defaults": {
+    "test": {
+      "key0": "value0"
+    }
+  },
+  "finalizers": {
+    "complete": [
+      "spec"
+    ]
+  },
+  "endpoints": {
+    "tester": {
+      "sources": [
+        {
+          "type": "Internal"
+          "name": "internal_tester"
+        }
+      ],
+      "actions": [
+        "Test::Chain",
+        "Test"
+      ],
+      "config": {
+        "test": {
+          "target": "tester",
+          "key1": "value1"
+        }
+      }
+    },
+    "spec": {
+      "sources": [
+        {
+          "type": "spec",
+          "name": "final"
+        }
+      ],
+      "config": {
+        "force_processing": true
+      }
+    }
+  }
+}
