@@ -1,9 +1,0 @@
-{
-  "value1": true,
-  "value2": "yay!",
-  "deep": {
-    "nesting": {
-      "value": "test"
-    }
-  }
-}
