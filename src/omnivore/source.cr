@@ -1,6 +1,6 @@
 module Omnivore
   # Sources for receiving and transmitting messages
-  class Source
+  abstract class Source
 
     include Omnivore::Utils::Logger
 
@@ -97,18 +97,13 @@ module Omnivore
     # Receive new message from source
     #
     # @return [Message]
-    def receive : Message?
-      sleep
-      Message.new(self)
-    end
+    abstract def receive : Message?
 
     # Transmit message to source
     #
     # @param msg [Message]
     # @return [self]
-    def transmit(msg : Message) : Source
-      self
-    end
+    abstract def transmit(msg : Message) : Source
 
     # Touch message to prevent timeout on long processing
     #
@@ -129,9 +124,14 @@ module Omnivore
     # Start receiving messages from the source
     def process
       while(consuming)
-        msg = receive
-        if(msg)
-          mailbox.send(msg)
+        begin
+          msg = receive
+          if(msg)
+            debug "Received new message for processing `#{msg}`"
+            mailbox.send(msg)
+          end
+        rescue e
+          error "Message receive error - #{e.class}: #{e}"
         end
       end
     end
