@@ -132,7 +132,7 @@ module Omnivore
               c_msg = mailbox.receive?
               unless(c_msg.nil?)
                 msg = c_msg as Message
-                debug "New message received! #{msg}"
+                debug "New message received - `#{msg}`"
                 apply_processors("pre", msg)
                 success = true
                 complete_notifiers = Channel(Bool).new(actions.size)
@@ -157,10 +157,11 @@ module Omnivore
                 end
                 if(success)
                   apply_processors("post", msg)
-                  spawn{ application.next_delivery(msg) }
+                  debug "Sending message to application for handling - `#{msg}`"
+                  application.next_delivery(msg)
                 else
-                  error "Halting delivery due to previous error"
-                  spawn{ application.finalize_message(msg, :error) }
+                  error "Halting delivery due to previous error - `#{msg}`"
+                  application.finalize_message(msg, :error)
                 end
               end
             end
