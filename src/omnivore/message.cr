@@ -76,5 +76,9 @@ module Omnivore
       source.touch(self)
     end
 
+    def to_s(io)
+      io << "<" << self.class.name << ":" << identifier << ">"
+    end
+
   end
 end
