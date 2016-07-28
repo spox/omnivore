@@ -29,8 +29,13 @@ module Omnivore
         end
         if(payload)
           debug "<< #{payload}"
-          payload = JSON.parse(payload).as_h.unsmash
-          Message.new(payload, self)
+          begin
+            m_payload = JSON.parse(payload).as_h.unsmash
+            Message.new(m_payload, self)
+          rescue e
+            error "Message payload processing error - #{e.class}: #{e}"
+            raise e
+          end
         end
       end
 
@@ -40,7 +45,7 @@ module Omnivore
       def shutdown
         source_mailbox.close
         @shutdown_called = true
-        self
+        super
       end
 
       # Connect the source (no-op)
@@ -48,7 +53,7 @@ module Omnivore
       # @return [self]
       def connect
         @connect_called = true
-        self
+        super
       end
 
     end
