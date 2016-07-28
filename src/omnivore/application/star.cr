@@ -20,15 +20,15 @@ module Omnivore
               msg.set(:target, value: nil)
             end
             msg.set(:delivery, :star, :path, value: points)
-            debug "Star processing determined next endpoint: #{e_name}"
+            debug "Star processing determined next endpoint: #{e_name} - `#{msg}`"
             e_name
           else
-            debug "Star processing determined no new endpoints in path (complete)"
+            debug "Star processing determined no new endpoints in path (complete) - `#{msg}`"
             msg.set(:target, value: nil)
             nil
           end
         elsif(!current_target.empty?)
-          debug "Payload target is set as: #{current_target}. Enabling round trip."
+          debug "Payload target is set as: #{current_target}. Enabling round trip. - `#{msg}`"
           msg.set(:target, value: star_name)
           current_target
         else

@@ -92,8 +92,10 @@ module Omnivore
       if(msg.get(:finalized, type: :string).nil?)
         target = next_endpoint(msg)
         if(target)
+          debug "Sending message to `#{target}` - `#{msg}`"
           spawn{ endpoint(target.to_s).transmit(msg) }
         else
+          debug "No target for message. Finalizing. - `#{msg}`"
           finalize_message(msg)
         end
         msg.confirm
@@ -141,7 +143,7 @@ module Omnivore
       msg.set(:finalized, value: kind.to_s)
       unless(finalizers.nil?)
         finalizers.as(Array).each do |finalize_action|
-          debug "Sending message to completion finalizer (#{kind}): #{finalize_action}"
+          debug "Sending message to completion finalizer (#{kind}): #{finalize_action} - `#{msg}`"
           spawn{ endpoint(finalize_action.to_s).transmit(msg) }
         end
       end
