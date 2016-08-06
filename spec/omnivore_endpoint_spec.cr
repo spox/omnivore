@@ -40,4 +40,18 @@ describe Omnivore::Endpoint do
     message.get(:data, :test, :value, type: :string).should eq("testing")
   end
 
+  it "should halt application on unexpected exception" do
+    app = generate_omnivore_app("simple")
+    endpoint = app.endpoints["tester"]
+    source = endpoint.sources.first
+    error = Exception.new("stub")
+    app.consume!
+    endpoint.mailbox.send(error)
+    10.times do
+      Fiber.yield
+      break unless app.active
+    end
+    app.active.should be_false
+  end
+
 end

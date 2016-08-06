@@ -12,7 +12,7 @@ module Omnivore
     property processors = {"pre" => [Omnivore::Processor], "post" => [Omnivore::Processor]}
     property auto_confirm : Bool
     property processing : Bool
-    property mailbox : Channel::Buffered(Message)
+    property mailbox : Channel::Buffered(Message | Exception)
 
     # Create a new instance
     #
@@ -22,7 +22,7 @@ module Omnivore
     # @return [self]
     def initialize(@application : Application, @name : String, @auto_confirm : Bool = false)
       @processing = false
-      @mailbox = Channel(Message).new(1)
+      @mailbox = Channel(Message | Exception).new(1)
       @sources = Array(Source).new
       @actions.clear
       @processors["pre"].clear
@@ -131,37 +131,12 @@ module Omnivore
               debug "Waiting for new message from sources"
               c_msg = mailbox.receive?
               unless(c_msg.nil?)
-                msg = c_msg as Message
-                debug "New message received - `#{msg}`"
-                apply_processors("pre", msg)
-                success = true
-                complete_notifiers = Channel(Bool).new(actions.size)
-                actions.each do |action_klass|
-                  action = action_klass.new(msg, self)
-                  spawn do
-                    begin
-                      action.execute if action.valid?
-                      complete_notifiers.send(true)
-                    rescue e
-                      error "Unexpected error encountered! #{e.class} - #{e.message}"
-                      debug "#{e.backtrace.join("\n")}"
-                      success = false
-                      complete_notifiers.send(true)
-                    end
-                  end
-                end
-                completed = [] of Bool
-                until(completed.size == actions.size)
-                  result = complete_notifiers.receive?
-                  completed << result if result
-                end
-                if(success)
-                  apply_processors("post", msg)
-                  debug "Sending message to application for handling - `#{msg}`"
-                  application.next_delivery(msg)
+                if(c_msg.is_a?(Message))
+                  handle_message(c_msg)
                 else
-                  error "Halting delivery due to previous error - `#{msg}`"
-                  application.finalize_message(msg, :error)
+                  error "Unexpected exception received from source. Halting application!"
+                  error "Exception received from source: #{c_msg.class}: #{c_msg}"
+                  application.halt!
                 end
               end
             end
@@ -196,6 +171,46 @@ module Omnivore
         warn "Processing not enabled. Not stopping as already stopped."
         false
       end
+    end
+
+    # Handle a new message by running it through all configured
+    # processors and actions
+    #
+    # @param msg [Message]
+    # @return [self]
+    def handle_message(msg : Message)
+      debug "New message received - `#{msg}`"
+      apply_processors("pre", msg)
+      success = true
+      complete_notifiers = Channel(Bool).new(actions.size)
+      actions.each do |action_klass|
+        action = action_klass.new(msg, self)
+        spawn do
+          begin
+            action.execute if action.valid?
+            complete_notifiers.send(true)
+          rescue e
+            error "Unexpected error encountered! #{e.class} - #{e.message}"
+            debug "#{e.backtrace.join("\n")}"
+            success = false
+            complete_notifiers.send(true)
+          end
+        end
+      end
+      completed = [] of Bool
+      until(completed.size == actions.size)
+        result = complete_notifiers.receive?
+        completed << result if result
+      end
+      if(success)
+        apply_processors("post", msg)
+        debug "Sending message to application for handling - `#{msg}`"
+        application.next_delivery(msg)
+      else
+        error "Halting delivery due to previous error - `#{msg}`"
+        application.finalize_message(msg, :error)
+      end
+      self
     end
 
     # Apply processor to message

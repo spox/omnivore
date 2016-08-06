@@ -19,7 +19,7 @@ module Omnivore
     end
 
     property name : String
-    property mailbox : Channel::Buffered(Message)
+    property mailbox : Channel::Buffered(Message | Exception)
     property consuming : Bool
     property config : Configuration
 
@@ -28,7 +28,7 @@ module Omnivore
     # @param name [String] name of source
     # @param mailbox [Channel::Buffered(Message)]
     # @return [self]
-    def initialize(@name : String, @mailbox : Channel::Buffered(Message), @config : Configuration = Configuration.new)
+    def initialize(@name : String, @mailbox : Channel::Buffered(Message | Exception), @config : Configuration = Configuration.new)
       @consuming = false
       setup
     end
@@ -132,6 +132,7 @@ module Omnivore
           end
         rescue e
           error "Message receive error - #{e.class}: #{e}"
+          mailbox.send(e)
         end
       end
     end
