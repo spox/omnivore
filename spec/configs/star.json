@@ -3,7 +3,7 @@
     "star": {
       "sources": [
         {
-          "type": "internal"
+          "type": "internal",
           "name": "internal_star"
         }
       ],
@@ -14,7 +14,7 @@
     "tester": {
       "sources": [
         {
-          "type": "internal"
+          "type": "internal",
           "name": "internal_tester"
         }
       ],

@@ -11,7 +11,7 @@
     "stub": {
       "sources": [
         {
-          "type": "Internal"
+          "type": "Internal",
           "name": "internal_stub"
         }
       ],
@@ -22,7 +22,7 @@
     "tester": {
       "sources": [
         {
-          "type": "Internal"
+          "type": "Internal",
           "name": "internal_tester"
         }
       ],
