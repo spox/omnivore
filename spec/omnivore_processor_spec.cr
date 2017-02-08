@@ -6,7 +6,7 @@ describe Omnivore::Processor do
     app = generate_omnivore_app("preprocessor")
     endpoint = app.endpoints["tester"]
     source = endpoint.sources.first
-    final = app.endpoints["spec"].sources.first as Omnivore::Source::Spec
+    final = app.endpoints["spec"].sources.first.as(Omnivore::Source::Spec)
     message = Omnivore::Message.new({"data" => {"process" => true}}, source)
     app.consume!
     endpoint.transmit(message)
@@ -23,7 +23,7 @@ describe Omnivore::Processor do
     app = generate_omnivore_app("postprocessor")
     endpoint = app.endpoints["tester"]
     source = endpoint.sources.first
-    final = app.endpoints["spec"].sources.first as Omnivore::Source::Spec
+    final = app.endpoints["spec"].sources.first.as(Omnivore::Source::Spec)
     message = Omnivore::Message.new({"data" => {"process" => true}}, source)
     app.consume!
     endpoint.transmit(message)
@@ -40,7 +40,7 @@ describe Omnivore::Processor do
     app = generate_omnivore_app("postprocessor")
     endpoint = app.endpoints["tester"]
     source = endpoint.sources.first
-    final = app.endpoints["spec"].sources.first as Omnivore::Source::Spec
+    final = app.endpoints["spec"].sources.first.as(Omnivore::Source::Spec)
     message = Omnivore::Message.new(source)
     app.consume!
     endpoint.transmit(message)

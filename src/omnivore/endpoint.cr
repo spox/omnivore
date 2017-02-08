@@ -87,7 +87,7 @@ module Omnivore
         "endpoints", name, "processors", type: :hash
       )
       if(processor_names)
-        processor_names = processor_names as Hash(String, JSON::Type)
+        processor_names = processor_names.as(Hash(String, JSON::Type))
         ["pre", "post"].each do |p_key|
           unless(processor_names[p_key]?.nil?)
             processor_names[p_key].as(Array).each do |p_name|

@@ -15,7 +15,7 @@ describe Omnivore::Source do
     message = Omnivore::Message.new(source)
     source.start.should be_true
     source.transmit(message).should eq(source)
-    e_msg = endpoint.mailbox.receive as Omnivore::Message
+    e_msg = endpoint.mailbox.receive.as(Omnivore::Message)
     source.stop
     message.identifier.should eq(e_msg.identifier)
   end

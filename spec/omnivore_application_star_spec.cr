@@ -7,7 +7,7 @@ describe Omnivore::Application::Star do
     app = Omnivore::Application::Star.new(config)
     endpoint = app.endpoints["star"]
     source = endpoint.sources.first
-    final = app.endpoints["spec"].sources.first as Omnivore::Source::Spec
+    final = app.endpoints["spec"].sources.first.as(Omnivore::Source::Spec)
     payload = Crogo::Smash.new
     payload.set(:delivery, :star, :path, value: ["tester", "tester", "spec"])
     message = Omnivore::Message.new(payload.unsmash, source)
@@ -27,7 +27,7 @@ describe Omnivore::Application::Star do
     config = generate_omnivore_config("star")
     app = Omnivore::Application::Star.new(config)
     endpoint = app.endpoints["star"]
-    final = app.endpoints["spec"].sources.first as Omnivore::Source::Spec
+    final = app.endpoints["spec"].sources.first.as(Omnivore::Source::Spec)
     source = endpoint.sources.first
     payload = Crogo::Smash.new
     payload.set(:delivery, :star, :path, value: ["tester", "tester", "spec"])

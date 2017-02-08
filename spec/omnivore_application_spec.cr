@@ -11,7 +11,7 @@ describe Omnivore::Application do
     app = generate_omnivore_app("simple")
     endpoint = app.endpoints["tester"]
     source = endpoint.sources.first
-    final = app.endpoints["spec"].sources.first as Omnivore::Source::Spec
+    final = app.endpoints["spec"].sources.first.as(Omnivore::Source::Spec)
     message = Omnivore::Message.new(source)
     app.consume!
     endpoint.transmit(message)
@@ -36,7 +36,7 @@ describe Omnivore::Application do
     app = generate_omnivore_app("simple")
     endpoint = app.endpoints["tester"]
     source = endpoint.sources.first
-    final = app.endpoints["spec"].sources.first as Omnivore::Source::Spec
+    final = app.endpoints["spec"].sources.first.as(Omnivore::Source::Spec)
     message = Omnivore::Message.new({"target" => "tester"} of String => JSON::Type, source)
     app.consume!
     endpoint.transmit(message)
@@ -54,7 +54,7 @@ describe Omnivore::Application do
     app = generate_omnivore_app("chain")
     endpoint = app.endpoints["tester"]
     source = endpoint.sources.first
-    final = app.endpoints["spec"].sources.first as Omnivore::Source::Spec
+    final = app.endpoints["spec"].sources.first.as(Omnivore::Source::Spec)
     message = Omnivore::Message.new(source)
     app.consume!
     endpoint.transmit(message)

@@ -46,8 +46,8 @@ module Omnivore
     def config : Configuration
       base = configuration.get(:defaults, name, type: :hash)
       overlay = configuration.get(:endpoints, endpoint.name, :config, name, type: :hash)
-      base = base.nil? ? {} of String => JSON::Type : base as Hash(String, JSON::Type)
-      overlay = overlay.nil? ? {} of String => JSON::Type : overlay as Hash(String, JSON::Type)
+      base = base.nil? ? {} of String => JSON::Type : base.as(Hash(String, JSON::Type))
+      overlay = overlay.nil? ? {} of String => JSON::Type : overlay.as(Hash(String, JSON::Type))
       Configuration.new(base.to_smash.deep_merge(overlay.to_smash).unsmash)
     end
 

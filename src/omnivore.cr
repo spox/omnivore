@@ -46,7 +46,7 @@ module Omnivore
     configuration = Configuration.new(config_path.empty? ? nil : config_path)
     logger_conf = configuration.get("logger", type: :hash)
     if(logger_conf)
-      logger_conf = configuration.hashify(logger_conf as Hash(String, JSON::Type))
+      logger_conf = configuration.hashify(logger_conf.as(Hash(String, JSON::Type)))
     else
       logger_conf = {} of String => String
     end
