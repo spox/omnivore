@@ -132,7 +132,11 @@ module Omnivore
           end
         rescue e
           error "Message receive error - #{e.class}: #{e}"
-          mailbox.send(e)
+          begin
+            mailbox.send(e)
+          rescue Channel::ClosedError
+            debug "Mailbox has been closed. Error message not delivered."
+          end
         end
       end
     end
