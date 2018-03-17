@@ -18,7 +18,7 @@ module Omnivore
     def initialize(base_data : Hash, @source : Source)
       base_data = base_data.unsmash
       @data = base_data
-      @identifier = SecureRandom.uuid
+      @identifier = UUID.random.to_s
       payload_id = get(:id, type: :string).to_s
       if(payload_id.empty?)
         @data["id"] = @identifier
@@ -33,7 +33,7 @@ module Omnivore
     # @param source [Source]
     # @return [self]
     def initialize(@source : Source)
-      @identifier = SecureRandom.uuid
+      @identifier = UUID.random.to_s
       @data = {} of String => JSON::Type
       set(:id, value: @identifier)
       locker_init
